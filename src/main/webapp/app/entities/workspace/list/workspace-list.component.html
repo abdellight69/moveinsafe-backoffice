@@ -1,0 +1,51 @@
+<div class="container-fluid" id="workspaces-list">
+  <div class="row">
+    <div class="p-5 pb-0 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+      <div class="row justify-content-end mt-3 mb-5">
+        <div class="col-12 mt-4 mb-2 form-label">
+          Vos workspaces
+        </div>
+        <div class="col-10">
+          <select
+            class="form-control select height-2x"
+            id="langKey" name="workspace"
+            formControlName="workspace" data-cy="workspace"
+            #workspaceSelect
+            (change)="onChange(workspaceSelect.value)"
+          >
+            <option *ngFor="let workspace of workspaces" [value]="workspace.id">{{ workspace.name }}</option>
+          </select>
+        </div>
+        <div class="col-2 text-end">
+          <span (click)="changePage('add-workspace')" class="mt-2 ms-icons plus size-2x cursor-pointer"></span>
+        </div>
+      </div>
+      <div class="row" *ngIf="currentWorkspace">
+        <div class="col-10 form-label">
+          Les utilisateurs du workspace
+        </div>
+        <div class="col-2 text-end">
+          <span (click)="changePage('add-user')" class="ms-icons plus size-2x cursor-pointer"></span>
+        </div>
+        <ng-container *ngIf="users && users.length">
+          <ul style="list-style: none;" *ngFor="let user of users">
+            <li>{{ user.lastName }} {{ user.firstName }}</li>
+          </ul>
+        </ng-container>
+        <ng-container *ngIf="!users || users.length === 0">
+          <div>
+            Aucun utilisateur sur ce Workspace
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
+      <ng-container *ngIf="page === 'add-workspace'">
+        <ms-workspace-form [workspaceParent]="currentWorkspace"></ms-workspace-form>
+      </ng-container>
+      <ng-container *ngIf="page === 'add-user'">
+        <ms-user-form [workspaceParent]="currentWorkspace"></ms-user-form>
+      </ng-container>
+    </div>
+  </div>
+</div>

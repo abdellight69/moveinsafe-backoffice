@@ -1,0 +1,247 @@
+<div id="workspace-form" class="p-5 container-fluid">
+  <div class="d-flex justify-content-center">
+    <div class="col-12">
+      <form name="form" role="form" (ngSubmit)="add()" [formGroup]="addForm" *ngIf="!success">
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label" for="lastName">Nom</label>
+            <input
+              type="text"
+              class="form-control"
+              id="lastName"
+              name="lastName"
+              placeholder="Nom"
+              formControlName="lastName"
+              data-cy="lastName"
+              #lastName
+            />
+
+            <div *ngIf="addForm.get('lastName')!.invalid && (addForm.get('lastName')!.dirty || addForm.get('lastName')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('lastName')?.errors?.required"
+              >
+                Le nom de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <label class="form-label" for="firstName">Prénom</label>
+            <input
+              type="text"
+              class="form-control"
+              id="firstName"
+              name="firstName"
+              placeholder="Prénom"
+              formControlName="firstName"
+              data-cy="firstName"
+              #firstName
+            />
+
+            <div *ngIf="addForm.get('firstName')!.invalid && (addForm.get('firstName')!.dirty || addForm.get('firstName')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('firstName')?.errors?.required"
+              >
+                Le Prénom de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4">
+            <label class="form-label" for="email">Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="email"
+              name="email"
+              placeholder="Email"
+              formControlName="email"
+              data-cy="email"
+              #email
+            />
+
+            <div *ngIf="addForm.get('email')!.invalid && (addForm.get('email')!.dirty || addForm.get('email')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('email')?.errors?.required"
+              >
+                L'email de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <label class="form-label" for="phone">Téléphone</label>
+            <input
+              type="text"
+              class="form-control"
+              id="phone"
+              name="phone"
+              placeholder="Téléphone"
+              formControlName="phone"
+              data-cy="phone"
+              #phone
+            />
+
+            <div *ngIf="addForm.get('phone')!.invalid && (addForm.get('phone')!.dirty || addForm.get('phone')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('phone')?.errors?.required"
+              >
+                Le téléphone de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <label class="form-label" for="phone">Entreprise</label>
+            <input
+              type="text"
+              class="form-control"
+              id="enterprise"
+              name="enterprise"
+              placeholder="Entreprise"
+              formControlName="enterprise"
+              data-cy="enterprise"
+              #enterprise
+            />
+
+            <div *ngIf="addForm.get('enterprise')!.invalid && (addForm.get('enterprise')!.dirty || addForm.get('enterprise')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('enterprise')?.errors?.required"
+              >
+                L'entreprise de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label" for="address">Adresse</label>
+            <input
+              type="text"
+              class="form-control"
+              id="address"
+              name="address"
+              placeholder="Adresse"
+              formControlName="address"
+              data-cy="address"
+              #address
+            />
+
+            <div *ngIf="addForm.get('address')!.invalid && (addForm.get('address')!.dirty || addForm.get('address')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('address')?.errors?.required"
+              >
+                L'adresse de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <label class="form-label" for="additional">Complément d'adresse</label>
+            <input
+              type="text"
+              class="form-control"
+              id="additional"
+              name="additional"
+              placeholder="Complément d'adresse"
+              formControlName="additional"
+              data-cy="additional"
+              #additional
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-4">
+            <label class="form-label" for="zip_code">Code postal</label>
+            <input
+              type="text"
+              class="form-control"
+              id="zip_code"
+              name="zip_code"
+              placeholder="Code postal"
+              formControlName="zip_code"
+              data-cy="zip_code"
+              #zip_code
+            />
+
+            <div *ngIf="addForm.get('zip_code')!.invalid && (addForm.get('zip_code')!.dirty || addForm.get('zip_code')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('zip_code')?.errors?.required"
+              >
+                Le code postal de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <label class="form-label" for="city">Ville</label>
+            <input
+              type="text"
+              class="form-control"
+              id="city"
+              name="city"
+              placeholder="Ville"
+              formControlName="city"
+              data-cy="city"
+              #city
+            />
+
+            <div *ngIf="addForm.get('city')!.invalid && (addForm.get('city')!.dirty || addForm.get('city')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('city')?.errors?.required"
+              >
+                La ville de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <label class="form-label" for="country">Pays</label>
+            <input
+              type="text"
+              class="form-control"
+              id="country"
+              name="country"
+              placeholder="Pays"
+              formControlName="country"
+              data-cy="country"
+              #country
+            />
+
+            <div *ngIf="addForm.get('country')!.invalid && (addForm.get('country')!.dirty || addForm.get('country')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('country')?.errors?.required"
+              >
+                Le pays de l'utilisateur est obligatoire.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 text-center mt-5">
+          <button
+            type="submit"
+            [disabled]="addForm.invalid"
+            class="btn btn-primary"
+            data-cy="submit"
+          >
+            Ajouter au workspace
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div id="workspace-form" class="p-5">
+  <div class="d-flex justify-content-center">
+    <div class="col-md-12">
+      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="addForm" *ngIf="!success">
+        <section>
+          <div class="mb-3">
+            <label class="form-label" for="login">Nom du workspace</label>
+            <input
+              type="text"
+              class="form-control"
+              id="login"
+              name="login"
+              placeholder="Nom"
+              formControlName="name"
+              data-cy="name"
+              #name
+            />
+
+            <div *ngIf="addForm.get('name')!.invalid && (addForm.get('name')!.dirty || addForm.get('name')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="addForm.get('name')?.errors?.required"
+              >
+                Votre nom de workspace est obligatoire.
+              </small>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h3><span (click)="addConfiguration()" class="ms-icons plus size-2x cursor-pointer mb-1"></span> Configuration</h3>
+          <div class="add-configurations-form">
+            <ng-container formArrayName="configurations">
+              <ng-container *ngFor="let configurationForm of []; let i = index">
+                <div class="row">
+                  <div class="col-5">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [id]="'configuration-key-' + i"
+                      [name]="'configuration-key-' + i"
+                      placeholder="Clé"
+                      [formControlName]="'configuration-key-' + i"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [id]="'configuration-value-' + i"
+                      [name]="'configuration-value-' + i"
+                      placeholder="Valeur"
+                      [formControlName]="'configuration-value-' + i"
+                    />
+                  </div>
+                  <div class="col-1" [formGroupName]="i">
+                    <i class="ms-icons minus size-2x cursor-pointer mt-1" (click)="deleteConfiguration(i)"></i>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </section>
+
+        <section>
+          <div class="col-12 text-center mt-5">
+            <button
+              type="submit"
+              [disabled]="addForm.invalid"
+              class="btn btn-primary"
+              data-cy="submit"
+            >
+              Ajouter le workspace
+            </button>
+          </div>
+        </section>
+      </form>
+    </div>
+  </div>
+</div>

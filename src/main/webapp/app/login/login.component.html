@@ -1,0 +1,65 @@
+<div id="login-page" class="container-fluid ps-md-0">
+  <div class="row">
+    <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+    <div class="col-md-8 col-lg-6 login-form">
+      <div class="login d-flex align-items-center py-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-9 col-lg-8 mx-auto">
+              <h3 class="login-heading mb-5 title">Authentification</h3>
+
+              <div class="alert alert-danger" *ngIf="authenticationError" jhiTranslate="login.messages.error.authentication" data-cy="loginError">
+                <strong>Erreur d'authentification !</strong> Veuillez vérifier vos identifiants de connexion.
+              </div>
+
+              <!-- Sign In Form -->
+              <form class="form" role="form" (ngSubmit)="login()" [formGroup]="loginForm">
+                <div class="form-floating mb-5">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="email"
+                    id="email"
+                    placeholder="{{ 'global.form.email.placeholder' | translate }}"
+                    formControlName="email"
+                    #email
+                    data-cy="email">
+                  <label for="email">Email</label>
+                </div>
+                <div class="form-floating mb-5">
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    id="password"
+                    placeholder="{{ 'login.form.password.placeholder' | translate }}"
+                    formControlName="password"
+                    data-cy="password">
+                  <label for="password">Mot de passe</label>
+                </div>
+                <div class="d-grid">
+                  <div class="row justify-content-center mb-2">
+                    <button
+                      [disabled]="isLoading || !loginForm.valid"
+                      class="btn btn-primary btn-login fw-bold col-xl-4 col-lg-6 col-sm-8 col-9"
+                      type="submit">
+                      Connexion
+                      <div *ngIf="isLoading" class="spinner-border text-light spinner size-1x" role="status">
+                        <span class="sr-only"></span>
+                      </div>
+                    </button>
+                  </div>
+                  <div class="text-center mt-4">
+                    <a class="small alert-link forgot-password"
+                       data-cy="forgetYourPasswordSelector"
+                       routerLink="/account/reset/request">Mot de passe oublié?</a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

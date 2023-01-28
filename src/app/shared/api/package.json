@@ -1,0 +1,30 @@
+{
+  "name": "restClient",
+  "version": "6.9.0",
+  "description": "OpenAPI client for restClient",
+  "author": "OpenAPI-Generator Contributors",
+  "keywords": [
+    "openapi-client",
+    "openapi-generator"
+  ],
+  "license": "Unlicense",
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json"
+  },
+  "peerDependencies": {
+    "@angular/core": "^10.1.6",
+    "rxjs": "^6.6.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^10.1.6",
+    "@angular/compiler": "^10.1.6",
+    "@angular/compiler-cli": "^10.1.6",
+    "@angular/core": "^10.1.6",
+    "@angular/platform-browser": "^10.1.6",
+    "ng-packagr": "^10.0.3",
+    "reflect-metadata": "^0.1.3",
+    "rxjs": "^6.6.0",
+    "tsickle": "^0.39.1",
+    "typescript": ">=3.9.2 <4.0.0",
+    "zone.js": "^0.10.2"
+  }}

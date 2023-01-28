@@ -1,0 +1,71 @@
+.ms-icons {
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  vertical-align: middle;
+  background-size: 100%;
+
+  &.size-1-2x {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  &.size-1-5x {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  &.size-2x {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &.size-3x {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  &.size-4x {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  &.size-6x {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  &.size-0-8x {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+
+  &.account {
+    background-image: url('../images/icons/account.svg');
+  }
+
+  &.trash {
+    background-image: url('../images/icons/trash.svg');
+  }
+
+  &.minus {
+    background-image: url('../images/icons/minus.svg');
+  }
+
+  &.plus {
+    background-image: url('../images/icons/plus.svg');
+  }
+
+  &.setting {
+    background-image: url('../images/icons/setting.svg');
+  }
+}
+
+.btn .ms-icons {
+  opacity: 0.5;
+}
+.btn:hover .ms-icons {
+  opacity: 1;
+}
