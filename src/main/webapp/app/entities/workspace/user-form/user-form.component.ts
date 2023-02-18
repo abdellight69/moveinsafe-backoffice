@@ -1,116 +1,118 @@
-import {Component, Input} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {UserDTO, Workspace} from "../../../../../../app/shared/api";
 import {HttpErrorResponse} from "@angular/common/http";
 import {WorkspaceService} from "../service/workspace.service";
 import {EventManager} from "../../../core/util/event-manager.service";
+import {UserService} from "../../user/user.service";
+import {AlertService} from "../../../core/util/alert.service";
+import {debounceTime, Subject} from "rxjs";
 
 @Component({
   selector: 'ms-user-form',
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
-export class UserFormComponent {
+export class UserFormComponent implements OnInit, OnChanges {
 
-  @Input() workspaceParent: Workspace | null = null;
+  @Input() workspaceParent: Workspace = {};
+  @Input() userToAdd: UserDTO = {};
+  @Input() isPreview = true;
+  isEmailValid = false;
+  emailSubject: Subject<{ email: string }> = new Subject<{ email: string }>();
   error = false;
   success = false;
+  isLoading = false;
+  roles = [{
+    key: "manager",
+    value: "Administrateur"
+  }, {
+    key: "member",
+    value: "Membre"
+  }]
+  servers = [{
+    key: "academy",
+    value: "Academy"
+  }, {
+    key: "v4",
+    value: "V4"
+  }]
 
-  addForm = new FormGroup({
-    firstName: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(100)
-      ],
-    }),
-    lastName: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(100)
-      ],
-    }),
-    email: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email],
-    }),
-    phone: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(20)
-      ],
-    }),
-    enterprise: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(100)
-      ],
-    }),
-    address: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(250)
-      ],
-    }),
-    additional: new FormControl('', {
-      nonNullable: false,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(250)
-      ],
-    }),
-    zipCode: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(15)
-      ],
-    }),
-    city: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(50)
-      ],
-    }),
-    country: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(50)
-      ],
-    }),
-  });
+  constructor(private translateService: TranslateService,
+              private workspaceService: WorkspaceService,
+              private userService: UserService,
+              private eventManager: EventManager,
+              private alertService: AlertService) {}
 
-  constructor(private translateService: TranslateService, private workspaceService: WorkspaceService, private eventManager: EventManager) {}
+  ngOnInit(): void {
+    this.emailSubject.pipe(debounceTime(2000)).subscribe((params) => {
+      this.checkEmail();
+    });
+  }
 
-  add(): void {
-    const user: UserDTO = this.addForm.getRawValue();
+  public ngOnChanges(changes: SimpleChanges): void {
+    if ((changes.userToAdd && changes.userToAdd.currentValue?.id) && this.workspaceParent.id) {
+      this.refreshUser(changes.userToAdd.currentValue.id, this.workspaceParent.id);
+    }
+  }
+
+  protected isCreation(): boolean {
+    return !this.userToAdd.id;
+  }
+
+  protected refreshUser(userId: string, workspaceId: string): void {
+    this.workspaceService.searchUserByUserAndWorkspace({
+      userId, workspaceId
+    }).subscribe((user) => {
+      this.userToAdd = user;
+    });
+  }
+
+  protected save(): void {
     this.error = false;
 
-    if (this.workspaceParent?.id) {
-      this.workspaceService
-        .addUser(user, this.workspaceParent.id)
-        .subscribe({next: () => {
-          this.success = true;
-          this.eventManager.broadcast('EVENT:WORKSPACE_USER_FETCH');
-        }, error: response => this.processError(response)});
+    if (this.workspaceParent.id) {
+      if(this.isCreation()) {
+        this.isLoading = true;
+        this.workspaceService
+          .addUser(this.userToAdd, this.workspaceParent.id)
+          .subscribe({
+            next: (user) => {
+              this.success = true;
+              this.isLoading = false;
+              this.isPreview = true;
+              this.userToAdd = user;
+              this.alertService.addAlert({ type: 'success', translationKey: "Utilisateur mis à jour avec succès." })
+              this.eventManager.broadcast('EVENT:WORKSPACE_USER_FETCH');
+            }, error: response => this.processError(response)
+          });
+      } else {
+        if (this.userToAdd.id) {
+          this.isLoading = true;
+          this.workspaceService
+            .updateUser(this.userToAdd, this.userToAdd.id, this.workspaceParent.id)
+            .subscribe({
+              next: (user) => {
+                this.success = true;
+                this.isLoading = false;
+                this.userToAdd = user;
+                this.isPreview = true;
+                this.alertService.addAlert({ type: 'success', translationKey: "Utilisateur mis à jour avec succès." })
+                this.eventManager.broadcast('EVENT:WORKSPACE_USER_FETCH');
+              }, error: response => this.processError(response)
+            });
+        }
+      }
     } else {
       this.error = true;
+    }
+  }
+
+  private checkEmail(): void {
+    if (this.workspaceParent.id && this.userToAdd.email) {
+      this.workspaceService.isUserInWorkspace(this.workspaceParent.id, this.userToAdd.email).subscribe((isOnWorkspace) => {
+        this.isEmailValid = !isOnWorkspace;
+      })
     }
   }
 

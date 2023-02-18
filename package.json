@@ -32,12 +32,14 @@
     "webapp:dev-verbose": "ng serve --verbose",
     "webapp:prod": "npm run clean-www && npm run webapp:build:prod",
     "webapp:test": "npm run test --",
-    "swagger:dev": "node_modules/.bin/openapi-generator-cli generate -i swagger/swagger.yml -g typescript-angular -t swagger -o src/app/shared/api --global-property skipFormModel=false --additional-properties=ngVersion=10.1.6,npmName=restClient,supportsES6=true,npmVersion=6.9.0"
+    "swagger:dev:test": "node_modules/.bin/openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-angular -o src/app/core/api/v1",
+    "swagger:dev": "node_modules/.bin/openapi-generator-cli generate -i http://localhost:8080/v3/api-docs -g typescript-angular -t swagger -o src/app/shared/api --global-property skipFormModel=false --additional-properties=ngVersion=10.1.6,npmName=restClient,supportsES6=true,npmVersion=6.9.0"
   },
   "config": {
     "default_environment": "prod"
   },
   "dependencies": {
+    "@angular/animations": "14.1.0",
     "@angular/common": "14.1.0",
     "@angular/compiler": "14.1.0",
     "@angular/core": "14.1.0",
@@ -57,9 +59,11 @@
     "@popperjs/core": "2.11.5",
     "bootstrap": "5.2.0",
     "dayjs": "1.11.4",
-    "ng-zorro-antd": "^15.0.3",
     "ngx-infinite-scroll": "14.0.0",
+    "ngx-letter-image-avatar": "^0.1.7",
+    "ngx-toastr": "15.2.2",
     "ngx-webstorage": "10.0.1",
+    "node-fetch": "3.3.0",
     "rxjs": "7.5.6",
     "sonar-scanner": "3.1.0",
     "tslib": "2.4.0",

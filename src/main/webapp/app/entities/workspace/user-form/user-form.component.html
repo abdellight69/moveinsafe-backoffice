@@ -1,52 +1,53 @@
-<div id="workspace-form" class="p-5 container-fluid">
-  <div class="d-flex justify-content-center">
-    <div class="col-12">
-      <form name="form" role="form" (ngSubmit)="add()" [formGroup]="addForm" *ngIf="!success">
+<div id="workspace-form" class="p-xl-4 p-lg-3 p-md-2 p-sm-1 p-1 mt-3">
+  <div>
+    <div class="col-md-12">
+      <form name="form" role="form" #userForm="ngForm" (ngSubmit)="save()">
         <div class="row mb-3">
-          <div class="col-6">
+          <div class="col-4">
             <label class="form-label" for="lastName">Nom</label>
             <input
               type="text"
               class="form-control"
               id="lastName"
+              required
               name="lastName"
               placeholder="Nom"
-              formControlName="lastName"
-              data-cy="lastName"
+              [disabled]="isPreview"
+              [(ngModel)]="userToAdd.lastName"
               #lastName
             />
-
-            <div *ngIf="addForm.get('lastName')!.invalid && (addForm.get('lastName')!.dirty || addForm.get('lastName')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('lastName')?.errors?.required"
-              >
-                Le nom de l'utilisateur est obligatoire.
-              </small>
-            </div>
           </div>
 
-          <div class="col-6">
+          <div class="col-4">
             <label class="form-label" for="firstName">Prénom</label>
             <input
               type="text"
               class="form-control"
               id="firstName"
+              required
               name="firstName"
               placeholder="Prénom"
-              formControlName="firstName"
-              data-cy="firstName"
+              [disabled]="isPreview"
+              [(ngModel)]="userToAdd.firstName"
               #firstName
             />
+          </div>
 
-            <div *ngIf="addForm.get('firstName')!.invalid && (addForm.get('firstName')!.dirty || addForm.get('firstName')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('firstName')?.errors?.required"
-              >
-                Le Prénom de l'utilisateur est obligatoire.
-              </small>
-            </div>
+          <div class="col-4">
+            <label class="form-label" for="role">Gesmansys serveur</label>
+            <select
+              class="form-control select border-rad-0 border-none cursor-pointer"
+              id="server"
+              name="server"
+              class="form-control"
+              required
+              [disabled]="isPreview"
+              [(ngModel)]="userToAdd.gesmansysServer"
+              #server
+            >
+              <option [ngValue]="null" disabled>Sélectionner un serveur Gesmansys</option>
+              <option *ngFor="let server of servers" [value]="server.key">{{ server.value }}</option>
+            </select>
           </div>
         </div>
 
@@ -57,21 +58,13 @@
               type="text"
               class="form-control"
               id="email"
+              required
               name="email"
               placeholder="Email"
-              formControlName="email"
-              data-cy="email"
+              [disabled]="!isCreation() || isPreview"
+              [(ngModel)]="userToAdd.email"
               #email
             />
-
-            <div *ngIf="addForm.get('email')!.invalid && (addForm.get('email')!.dirty || addForm.get('email')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('email')?.errors?.required"
-              >
-                L'email de l'utilisateur est obligatoire.
-              </small>
-            </div>
           </div>
 
           <div class="col-4">
@@ -82,166 +75,47 @@
               id="phone"
               name="phone"
               placeholder="Téléphone"
-              formControlName="phone"
-              data-cy="phone"
+              [disabled]="isPreview"
+              [(ngModel)]="userToAdd.phone"
               #phone
             />
-
-            <div *ngIf="addForm.get('phone')!.invalid && (addForm.get('phone')!.dirty || addForm.get('phone')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('phone')?.errors?.required"
-              >
-                Le téléphone de l'utilisateur est obligatoire.
-              </small>
-            </div>
           </div>
 
           <div class="col-4">
-            <label class="form-label" for="phone">Entreprise</label>
-            <input
-              type="text"
+            <label class="form-label" for="role">Rôle</label>
+            <select
+              class="form-control select border-rad-0 border-none cursor-pointer"
+              id="role"
+              name="role"
               class="form-control"
-              id="enterprise"
-              name="enterprise"
-              placeholder="Entreprise"
-              formControlName="enterprise"
-              data-cy="enterprise"
-              #enterprise
-            />
-
-            <div *ngIf="addForm.get('enterprise')!.invalid && (addForm.get('enterprise')!.dirty || addForm.get('enterprise')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('enterprise')?.errors?.required"
-              >
-                L'entreprise de l'utilisateur est obligatoire.
-              </small>
-            </div>
+              required
+              [disabled]="isPreview"
+              [(ngModel)]="userToAdd.role"
+              #roleSelect
+            >
+              <option [ngValue]="null" disabled>Sélectionner un role</option>
+              <option *ngFor="let role of roles" [value]="role.key">{{ role.value }}</option>
+            </select>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-6">
-            <label class="form-label" for="address">Adresse</label>
-            <input
-              type="text"
-              class="form-control"
-              id="address"
-              name="address"
-              placeholder="Adresse"
-              formControlName="address"
-              data-cy="address"
-              #address
-            />
-
-            <div *ngIf="addForm.get('address')!.invalid && (addForm.get('address')!.dirty || addForm.get('address')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('address')?.errors?.required"
-              >
-                L'adresse de l'utilisateur est obligatoire.
-              </small>
-            </div>
-          </div>
-
-          <div class="col-6">
-            <label class="form-label" for="additional">Complément d'adresse</label>
-            <input
-              type="text"
-              class="form-control"
-              id="additional"
-              name="additional"
-              placeholder="Complément d'adresse"
-              formControlName="additional"
-              data-cy="additional"
-              #additional
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-4">
-            <label class="form-label" for="zip_code">Code postal</label>
-            <input
-              type="text"
-              class="form-control"
-              id="zip_code"
-              name="zip_code"
-              placeholder="Code postal"
-              formControlName="zip_code"
-              data-cy="zip_code"
-              #zip_code
-            />
-
-            <div *ngIf="addForm.get('zip_code')!.invalid && (addForm.get('zip_code')!.dirty || addForm.get('zip_code')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('zip_code')?.errors?.required"
-              >
-                Le code postal de l'utilisateur est obligatoire.
-              </small>
-            </div>
-          </div>
-
-          <div class="col-4">
-            <label class="form-label" for="city">Ville</label>
-            <input
-              type="text"
-              class="form-control"
-              id="city"
-              name="city"
-              placeholder="Ville"
-              formControlName="city"
-              data-cy="city"
-              #city
-            />
-
-            <div *ngIf="addForm.get('city')!.invalid && (addForm.get('city')!.dirty || addForm.get('city')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('city')?.errors?.required"
-              >
-                La ville de l'utilisateur est obligatoire.
-              </small>
-            </div>
-          </div>
-
-          <div class="col-4">
-            <label class="form-label" for="country">Pays</label>
-            <input
-              type="text"
-              class="form-control"
-              id="country"
-              name="country"
-              placeholder="Pays"
-              formControlName="country"
-              data-cy="country"
-              #country
-            />
-
-            <div *ngIf="addForm.get('country')!.invalid && (addForm.get('country')!.dirty || addForm.get('country')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="addForm.get('country')?.errors?.required"
-              >
-                Le pays de l'utilisateur est obligatoire.
-              </small>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 text-center mt-5">
+        <div class="col-12 text-center mt-5" *ngIf="!isPreview">
           <button
             type="submit"
-            [disabled]="addForm.invalid"
+            [disabled]="userForm.invalid || isLoading || !isEmailValid"
             class="btn btn-primary"
             data-cy="submit"
           >
-            Ajouter au workspace
+            <span *ngIf="isCreation()">Ajouter l'utilisateur</span>
+            <span *ngIf="!isCreation()">Modifier l'utilisateur</span>
+            <div *ngIf="isLoading" class="spinner-grow text-light" style="width: 1rem; height: 1rem; margin-left: 20px" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
           </button>
         </div>
       </form>
+      <ms-alert-error></ms-alert-error>
+      <ms-alert></ms-alert>
     </div>
   </div>
 </div>

@@ -57,15 +57,6 @@ this.credentials = configurationParameters.credentials;
 else {
 this.credentials = {};
 }
-
-    // init default bearerAuth credential
-    if (!this.credentials['bearerAuth']) {
-            this.credentials['bearerAuth'] = () => {
-            return typeof this.accessToken === 'function'
-            ? this.accessToken()
-            : this.accessToken;
-            };
-    }
 }
 
 /**

@@ -15,7 +15,7 @@ export class MainComponent implements OnInit {
   private renderer: Renderer2;
 
   constructor(
-    private accountService: AccountService,
+    protected accountService: AccountService,
     private titleService: Title,
     private router: Router,
     private translateService: TranslateService,

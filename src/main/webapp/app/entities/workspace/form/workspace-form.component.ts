@@ -1,57 +1,90 @@
 import {Component, Input} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {TranslateService} from "@ngx-translate/core";
 import {WorkspaceService} from "../service/workspace.service";
-import {Workspace} from "../../../../../../app/shared/api";
+import {ConfigurationDTO, Workspace} from "../../../../../../app/shared/api";
 import {HttpErrorResponse} from "@angular/common/http";
+import {EventManager} from "../../../core/util/event-manager.service";
+import {AlertService} from "../../../core/util/alert.service";
 
 @Component({
   selector: 'ms-workspace-form',
   templateUrl: './workspace-form.component.html',
   styleUrls: ['./workspace-form.component.scss']
 })
-export class WorkspaceFormComponent{
+export class WorkspaceFormComponent {
 
   @Input() workspaceParent: Workspace | null = null;
+  @Input() workspaceToSave: Workspace = {
+    id: '',
+    name: '',
+    organisation: {},
+    workspaces: [],
+    configuration: [],
+    devices: []
+  };
+  @Input() isPreview = true;
   error = false;
   success = false;
+  isLoading = false;
 
-  addForm = new FormGroup({
-    name: new FormControl('', {
-      nonNullable: true,
-      validators: [
-        Validators.required,
-        Validators.minLength(1),
-        Validators.maxLength(100)
-      ],
-    }),
-    configurations: this.fb.array([])
-  });
-
-  constructor(private translateService: TranslateService, private workspaceService: WorkspaceService, private fb:FormBuilder) {}
+  constructor(private translateService: TranslateService,
+              private workspaceService: WorkspaceService,
+              private eventManager: EventManager,
+              private alertService: AlertService) {}
 
   protected save(): void {
-    const workspace: Workspace = this.addForm.getRawValue();
-    this.error = false;
 
     if (this.workspaceParent?.id) {
-      this.workspaceService
-        .saveWorkspace(workspace, this.workspaceParent.id)
-        .subscribe({next: () => (this.success = true), error: response => this.processError(response)});
+      if (this.workspaceToSave.id) {
+        this.isLoading = true;
+        this.workspaceService
+          .updateWorkspace(this.workspaceToSave, this.workspaceToSave.id, this.workspaceParent.id)
+          .subscribe({next: () => {
+              this.success = true;
+              this.isLoading = false;
+              this.alertService.addAlert({ type: 'success', translationKey: "Workspace mis à jour avec succes." })
+              this.eventManager.broadcast("EVENT:WORKSPACE_FETCH");
+            }, error: (response) => {
+              this.processError(response);
+              this.isLoading = false;
+            }
+          });
+      } else {
+        this.isLoading = false;
+        this.workspaceService
+          .saveWorkspace(this.workspaceToSave, this.workspaceParent.id)
+          .subscribe({next: () => {
+              this.success = true
+              this.isLoading = false;
+              this.isPreview = true;
+              this.alertService.addAlert({ type: 'success', translationKey: "Workspace créé avec succes." })
+              this.eventManager.broadcast("EVENT:WORKSPACE_FETCH");
+            }, error: (response) => {
+              this.isLoading = false;
+              this.processError(response)
+            }
+          });
+      }
     } else {
       this.error = true;
     }
   }
 
   protected addConfiguration(): void {
-    const configurationForm = this.fb.group({
-      title: ['', Validators.required],
-      level: ['beginner', Validators.required]
-    });
+    if (!this.workspaceToSave.configuration) {
+      this.workspaceToSave.configuration = [];
+    }
+
+    this.workspaceToSave.configuration.push({
+      key: '',
+      value: ''
+    } as ConfigurationDTO)
   }
 
   protected deleteConfiguration(configurationIndex: number): void {
-    // TODO
+    if (this.workspaceToSave.configuration) {
+      this.workspaceToSave.configuration.splice(configurationIndex, 1);
+    }
   }
 
   private processError(response: HttpErrorResponse): void {

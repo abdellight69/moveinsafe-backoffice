@@ -1,0 +1,12 @@
+{
+  "confirmation": {
+    "form": {
+      "field": "Confirmer cette action en saisissant \"{{ verification }}\"",
+      "field.placeholders": "Respectez bien les majuscules, minuscules et espaces",
+      "error.pattern": "La valeur ne correspond pas à \"{{ verification }}\"",
+      "buttons": {
+        "delete": "Supprimer"
+      }
+    }
+  }
+}

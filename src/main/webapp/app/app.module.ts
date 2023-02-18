@@ -33,15 +33,15 @@ import {NgSelectModule} from "@ng-select/ng-select";
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: false }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: false}),
     HttpClientModule,
-    NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
-    TranslationModule,
+    NgxWebstorageModule.forRoot({prefix: 'jhi', separator: '-', caseSensitive: true}),
+    TranslationModule
   ],
   providers: [
     Title,
-    { provide: LOCALE_ID, useValue: 'fr' },
-    { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
+    {provide: LOCALE_ID, useValue: 'fr'},
+    {provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter},
     httpInterceptorProviders,
   ],
   declarations: [MainComponent, NavbarComponent, ErrorComponent, ActiveMenuDirective, FooterComponent],

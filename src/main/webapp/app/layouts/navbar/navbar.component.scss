@@ -28,9 +28,24 @@ Logo styles
 ========================================================================== */
 .logo-img {
   height: 45px;
-  width: 45px;
+  width: 150px;
   display: inline-block;
   vertical-align: middle;
-  background: url('../../../content/images/logo-jhipster.png') no-repeat center center;
+  background: url('../../../content/images/logo.png') no-repeat center center;
   background-size: contain;
 }
+
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.app-avatar {
+  height: 40px;
+}
+
+.app-avatar:hover {
+  box-shadow: 10px 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+

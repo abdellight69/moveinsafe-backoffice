@@ -42,6 +42,22 @@
     height: 0.8rem;
   }
 
+  &.icon-white {
+    filter: brightness(0) invert(1);
+  }
+
+  &.icon-white:hover {
+    filter: invert(97%) sepia(3%) saturate(226%) hue-rotate(207deg) brightness(115%) contrast(81%);
+  }
+
+  &.icon-primary {
+    filter: invert(41%) sepia(83%) saturate(1962%) hue-rotate(170deg) brightness(99%) contrast(101%);
+  }
+
+  &.icon-primary:hover {
+    filter: invert(30%) sepia(64%) saturate(4458%) hue-rotate(199deg) brightness(94%) contrast(101%);
+  }
+
   &.account {
     background-image: url('../images/icons/account.svg');
   }
@@ -52,6 +68,18 @@
 
   &.minus {
     background-image: url('../images/icons/minus.svg');
+  }
+
+  &.eye {
+    background-image: url('../images/icons/eye.svg');
+  }
+
+  &.delete {
+    background-image: url('../images/icons/delete.svg');
+  }
+
+  &.edit {
+    background-image: url('../images/icons/edit.svg');
   }
 
   &.plus {

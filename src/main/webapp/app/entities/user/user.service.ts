@@ -19,10 +19,6 @@ export class UserService {
     return this.http.get<IUser[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
-  compareUser(o1: Pick<IUser, 'id'> | null, o2: Pick<IUser, 'id'> | null): boolean {
-    return o1 && o2 ? o1.id === o2.id : o1 === o2;
-  }
-
   addUserToCollectionIfMissing<Type extends Partial<IUser> & Pick<IUser, 'id'>>(
     userCollection: Type[],
     ...usersToCheck: (Type | null | undefined)[]

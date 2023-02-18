@@ -26,6 +26,8 @@ export class AuthServerProvider {
     return tokenInLocalStorage ?? tokenInSessionStorage ?? '';
   }
 
+
+
   login(credentials: Login): Observable<void> {
     return this.http
       .post<JwtToken>(this.applicationConfigService.getEndpointFor('api/public/account/authenticate'), credentials)

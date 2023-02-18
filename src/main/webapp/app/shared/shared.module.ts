@@ -13,6 +13,8 @@ import { SortByDirective } from './sort/sort-by.directive';
 import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
 import { FilterComponent } from './filter/filter.component';
+import {ConfirmationComponent} from "./confirmation/confirmation.component";
+import {NgxLetterImageAvatarModule} from "ngx-letter-image-avatar";
 
 @NgModule({
   imports: [SharedLibsModule],
@@ -29,6 +31,7 @@ import { FilterComponent } from './filter/filter.component';
     SortDirective,
     ItemCountComponent,
     FilterComponent,
+    ConfirmationComponent
   ],
   exports: [
     SharedLibsModule,
@@ -44,6 +47,7 @@ import { FilterComponent } from './filter/filter.component';
     SortDirective,
     ItemCountComponent,
     FilterComponent,
+    ConfirmationComponent
   ],
 })
 export class SharedModule {}

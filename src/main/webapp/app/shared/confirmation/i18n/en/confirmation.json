@@ -1,0 +1,12 @@
+{
+  "confirmation": {
+    "form": {
+      "field": "Confirm this action by entering \"{{ verification }}\"",
+      "field.placeholders": "\nRespect the upper and lower case letters and spaces",
+      "error.pattern": "Field value doesn't match pattern \"{{ verification }}\"",
+      "buttons": {
+        "delete": "Delete"
+      }
+    }
+  }
+}

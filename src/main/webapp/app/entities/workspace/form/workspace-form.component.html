@@ -1,25 +1,25 @@
-<div id="workspace-form" class="p-5">
-  <div class="d-flex justify-content-center">
+<div id="workspace-form" class="p-xl-4 p-lg-3 p-md-2 p-sm-1 p-1 mt-3">
+  <div>
     <div class="col-md-12">
-      <form name="form" role="form" (ngSubmit)="save()" [formGroup]="addForm" *ngIf="!success">
+      <form name="form" #workspaceForm="ngForm" role="form" (ngSubmit)="save()">
         <section>
           <div class="mb-3">
-            <label class="form-label" for="login">Nom du workspace</label>
+            <label class="form-label" for="name">Nom du workspace</label>
             <input
               type="text"
               class="form-control"
-              id="login"
-              name="login"
+              id="name"
+              name="name"
               placeholder="Nom"
-              formControlName="name"
               data-cy="name"
+              [disabled]="isPreview"
+              [(ngModel)]="workspaceToSave.name"
               #name
             />
 
-            <div *ngIf="addForm.get('name')!.invalid && (addForm.get('name')!.dirty || addForm.get('name')!.touched)">
+            <div *ngIf="!workspaceToSave.name && !isPreview">
               <small
                 class="form-text text-danger"
-                *ngIf="addForm.get('name')?.errors?.required"
               >
                 Votre nom de workspace est obligatoire.
               </small>
@@ -28,53 +28,64 @@
         </section>
 
         <section>
-          <h3><span (click)="addConfiguration()" class="ms-icons plus size-2x cursor-pointer mb-1"></span> Configuration</h3>
+          <h3 *ngIf="!isPreview || (isPreview && workspaceToSave.configuration && workspaceToSave.configuration.length)">Configuration <span *ngIf="!isPreview" (click)="addConfiguration()" class="ms-icons plus size-2x cursor-pointer mb-1 mt-1"></span></h3>
           <div class="add-configurations-form">
-            <ng-container formArrayName="configurations">
-              <ng-container *ngFor="let configurationForm of []; let i = index">
-                <div class="row">
-                  <div class="col-5">
-                    <input
-                      type="text"
-                      class="form-control"
-                      [id]="'configuration-key-' + i"
-                      [name]="'configuration-key-' + i"
-                      placeholder="Clé"
-                      [formControlName]="'configuration-key-' + i"
-                    />
-                  </div>
-                  <div class="col-6">
-                    <input
-                      type="text"
-                      class="form-control"
-                      [id]="'configuration-value-' + i"
-                      [name]="'configuration-value-' + i"
-                      placeholder="Valeur"
-                      [formControlName]="'configuration-value-' + i"
-                    />
-                  </div>
-                  <div class="col-1" [formGroupName]="i">
-                    <i class="ms-icons minus size-2x cursor-pointer mt-1" (click)="deleteConfiguration(i)"></i>
-                  </div>
+            <ng-container *ngFor="let config of workspaceToSave.configuration; let i = index">
+              <div class="row" [ngClass]="{ 'mt-1': i >= 1 }">
+                <div class="col-5">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [id]="'configuration-key-' + i"
+                    [name]="'configuration-key-' + i"
+                    placeholder="Clé"
+                    [disabled]="isPreview"
+                    [(ngModel)]="config.key"
+                  />
                 </div>
-              </ng-container>
+                <div class="col-6">
+                  <input
+                    type="text"
+                    class="form-control"
+                    [id]="'configuration-value-' + i"
+                    [name]="'configuration-value-' + i"
+                    placeholder="Valeur"
+                    [disabled]="isPreview"
+                    [(ngModel)]="config.value"
+                  />
+                </div>
+                <div class="col-1">
+                  <i class="ms-icons minus size-2x cursor-pointer mt-2" (click)="deleteConfiguration(i)"></i>
+                </div>
+              </div>
             </ng-container>
           </div>
         </section>
 
-        <section>
+        <section *ngIf="!isPreview">
           <div class="col-12 text-center mt-5">
             <button
+              *ngIf="!workspaceToSave.id"
               type="submit"
-              [disabled]="addForm.invalid"
+              [disabled]="workspaceForm.form.invalid || isLoading"
               class="btn btn-primary"
               data-cy="submit"
             >
               Ajouter le workspace
             </button>
+            <button
+              *ngIf="workspaceToSave.id"
+              type="submit"
+              [disabled]="workspaceForm.form.invalid || isLoading"
+              class="btn btn-primary"
+              data-cy="submit"
+            >
+              Modifier le workspace
+            </button>
           </div>
         </section>
       </form>
+      <ms-alert class="mt-3"></ms-alert>
     </div>
   </div>
 </div>

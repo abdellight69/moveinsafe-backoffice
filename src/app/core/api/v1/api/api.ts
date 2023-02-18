@@ -1,0 +1,15 @@
+export * from './accountResource.service';
+import { AccountResourceService } from './accountResource.service';
+export * from './authInfoResource.service';
+import { AuthInfoResourceService } from './authInfoResource.service';
+export * from './deviceCommandResource.service';
+import { DeviceCommandResourceService } from './deviceCommandResource.service';
+export * from './deviceQueryResource.service';
+import { DeviceQueryResourceService } from './deviceQueryResource.service';
+export * from './logoutResource.service';
+import { LogoutResourceService } from './logoutResource.service';
+export * from './workspaceCommandResource.service';
+import { WorkspaceCommandResourceService } from './workspaceCommandResource.service';
+export * from './workspaceQueryResource.service';
+import { WorkspaceQueryResourceService } from './workspaceQueryResource.service';
+export const APIS = [AccountResourceService, AuthInfoResourceService, DeviceCommandResourceService, DeviceQueryResourceService, LogoutResourceService, WorkspaceCommandResourceService, WorkspaceQueryResourceService];

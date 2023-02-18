@@ -1,35 +1,36 @@
-<div class="container-fluid" id="workspaces-list">
+<div class="container" id="workspaces-list">
   <div class="row">
-    <div class="p-5 pb-0 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
-      <div class="row justify-content-end mt-3 mb-5">
-        <div class="col-12 mt-4 mb-2 form-label">
-          Vos workspaces
-        </div>
-        <div class="col-10">
-          <select
-            class="form-control select height-2x"
-            id="langKey" name="workspace"
-            formControlName="workspace" data-cy="workspace"
-            #workspaceSelect
-            (change)="onChange(workspaceSelect.value)"
-          >
-            <option *ngFor="let workspace of workspaces" [value]="workspace.id">{{ workspace.name }}</option>
-          </select>
-        </div>
-        <div class="col-2 text-end">
-          <span (click)="changePage('add-workspace')" class="mt-2 ms-icons plus size-2x cursor-pointer"></span>
-        </div>
+    <div class="p-2 pb-0 col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4">
+      <div class="row justify-content-end mt-3 mb-1">
+        <ul class="list-group p-3 border-rad-0">
+          <a class="list-group-item active bg-primary">
+            Vos workspaces
+            <span *ngIf="currentWorkspace.id &&isManager" (click)="editPage({ page: 'add-workspace' })" class="ms-icons plus size-2x cursor-pointer add-icon icon-white"></span>
+          </a>
+          <li class="list-group-item list-item border-primary-gray" [ngClass]="{ 'active': workspace.id === currentWorkspace.id }" *ngFor="let workspace of workspaces">
+            <div class="d-flex flex-row justify-content-center">
+              <div (click)="onChange(workspace)" class="col-8 cursor-pointer fw-bold p-2 text-center">{{ workspace.name }}</div>
+              <div *ngIf="isManager" class="p-2"><span class="ml-4" (click)="editPage({ page: 'edit-workspace', workspace })" class="ms-icons edit size-1-5x cursor-pointer icon-primary mt-1 pr-2"></span></div>
+              <div *ngIf="isManager" class="p-2"><span class="ml-4" (click)="editPage({ page: 'delete-workspace', workspace })" class="ms-icons delete size-1-5x cursor-pointer icon-primary mt-1 pr-2"></span></div>
+            </div>
+          </li>
+        </ul>
       </div>
-      <div class="row" *ngIf="currentWorkspace">
-        <div class="col-10 form-label">
-          Les utilisateurs du workspace
-        </div>
-        <div class="col-2 text-end">
-          <span (click)="changePage('add-user')" class="ms-icons plus size-2x cursor-pointer"></span>
-        </div>
+
+      <div class="row" *ngIf="currentWorkspace?.id">
         <ng-container *ngIf="users && users.length">
-          <ul style="list-style: none;" *ngFor="let user of users">
-            <li>{{ user.lastName }} {{ user.firstName }}</li>
+          <ul class="list-group p-3 border-rad-0">
+            <a class="list-group-item active">
+              Les utilisateurs du workspace <span class="fw-bold">"{{ currentWorkspace.name }}"</span>
+              <span *ngIf="isManager" (click)="this.editPage({ page: 'add-user' })" class="ms-icons plus size-2x cursor-pointer add-icon icon-white"></span>
+            </a>
+            <li class="border-none list-group-item list-item border-primary-gray" [ngClass]="{ 'active': user.id === currentUser.id }" *ngFor="let user of users">
+              <div class="d-flex flex-row justify-content-center">
+                <div (click)="onChangeUser(user)" class="col-8 cursor-pointer fw-bold p-2 text-center">{{ user.lastName }} {{ user.firstName }}</div>
+                <div *ngIf="isManager" class="p-2"><span class="ml-4" (click)="editPage({ page: 'edit-user', user })" class="ms-icons edit size-1-5x cursor-pointer icon-primary mt-1 pr-2"></span></div>
+                <div *ngIf="isManager" class="p-2"><span class="ml-4" (click)="deleteUser({ user })" class="ms-icons delete size-1-5x cursor-pointer icon-primary mt-1 pr-2"></span></div>
+              </div>
+            </li>
           </ul>
         </ng-container>
         <ng-container *ngIf="!users || users.length === 0">
@@ -38,13 +39,42 @@
           </div>
         </ng-container>
       </div>
+      <div class="row" *ngIf="currentWorkspace?.id">
+        <ng-container>
+          <ul class="list-group p-3 border-rad-0">
+            <a class="list-group-item active">
+              Les devices du workspace  <span class="fw-bold">"{{ currentWorkspace.name }}"</span>
+            </a>
+            <li class="list-group-item border-primary-gray" *ngFor="let device of devices">
+              <div class="d-flex flex-row justify-content-center">
+                <div class="col-8 fw-bold p-2 text-center">{{ device.name }}</div>
+                <div *ngIf="isManager" class="p-2"><span class="ml-4" (click)="deleteDevice({ device })" class="ms-icons delete size-1-5x cursor-pointer icon-primary mt-1 pr-2"></span></div>
+              </div>
+            </li>
+            <li class="list-group-item" *ngIf="!devices || !devices.length">
+              Aucun device pour ce workspace
+            </li>
+          </ul>
+        </ng-container>
+        <ng-container *ngIf="!users || users.length === 0">
+          <div>
+            Aucun Device sur ce Workspace
+          </div>
+        </ng-container>
+      </div>
     </div>
     <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
       <ng-container *ngIf="page === 'add-workspace'">
-        <ms-workspace-form [workspaceParent]="currentWorkspace"></ms-workspace-form>
+        <ms-workspace-form [isPreview]="isPreview" [workspaceParent]="currentWorkspace"></ms-workspace-form>
       </ng-container>
       <ng-container *ngIf="page === 'add-user'">
-        <ms-user-form [workspaceParent]="currentWorkspace"></ms-user-form>
+        <ms-user-form [isPreview]="isPreview" [workspaceParent]="currentWorkspace"></ms-user-form>
+      </ng-container>
+      <ng-container *ngIf="page === 'edit-workspace'">
+        <ms-workspace-form [isPreview]="isPreview" [workspaceToSave]="currentWorkspace" [workspaceParent]="currentWorkspace"></ms-workspace-form>
+      </ng-container>
+      <ng-container *ngIf="page === 'edit-user'">
+        <ms-user-form [isPreview]="isPreview" [userToAdd]="currentUser" [workspaceParent]="currentWorkspace"></ms-user-form>
       </ng-container>
     </div>
   </div>

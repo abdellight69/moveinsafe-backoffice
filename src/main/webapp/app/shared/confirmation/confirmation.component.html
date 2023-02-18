@@ -1,0 +1,54 @@
+<form id="confirmationForm" #confirmationForm="ngForm" name="confirmationForm" (ngSubmit)="activeModal.close(true)">
+  <div class="modal-header">
+    <div class="col-xl-12">
+      <h2 class="modal-title">{{ titleKey }}</h2>
+      <button *ngIf="!revertKey" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span class="fc-icons cross"></span>
+      </button>
+    </div>
+  </div>
+  <div class="modal-body">
+    <div class="col-xl-12" *ngIf="guideKey">
+      <p [innerHTML]="guideKey">guide</p>
+      <hr *ngIf="expectedConfirmationValue" />
+    </div>
+    <div class="col-xl-12" *ngIf="expectedConfirmationValue">
+      <div class="form-group">
+        <label for="confirmationField">Afin de valider la suppression, merci de saisir la valeur suivante : {{ expectedConfirmationValue }}</label>
+        <input
+          required
+          [pattern]="expectedConfirmationValue"
+          [(ngModel)]="confirmationValue"
+          type="text"
+          class="form-control"
+          id="confirmationField"
+          name="confirmationField"
+          aria-describedby="confirmationField"
+          #confirmationField="ngModel"
+          placeholder="{{ 'confirmation.form.field.placeholders' }}"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      *ngIf="revertKey"
+      id="closeFormSubmit"
+      form="confirmationForm"
+      class="btn btn-danger"
+      (click)="activeModal.close(false)"
+      [disabled]="confirmationForm.invalid"
+    >
+      {{ revertKey }}
+    </button>
+    <button
+      type="submit"
+      id="confirmationFormSubmit"
+      form="confirmationForm"
+      [classList]="revertKey ? 'btn btn-primary' : 'btn btn-danger'"
+      [disabled]="confirmationForm.invalid"
+    >
+      {{ buttonKey }}
+    </button>
+  </div>
+</form>
