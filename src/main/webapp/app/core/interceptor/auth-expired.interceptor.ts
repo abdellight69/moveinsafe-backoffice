@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { LoginService } from 'app/login/login.service';
 import { StateStorageService } from 'app/core/auth/state-storage.service';
 import { AccountService } from 'app/core/auth/account.service';
+import {AuthServerProvider} from "../auth/auth-jwt.service";
 
 @Injectable()
 export class AuthExpiredInterceptor implements HttpInterceptor {
@@ -14,7 +15,8 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
     private loginService: LoginService,
     private stateStorageService: StateStorageService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private authServerProvider: AuthServerProvider
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -23,8 +25,7 @@ export class AuthExpiredInterceptor implements HttpInterceptor {
         error: (err: HttpErrorResponse) => {
           if (err.status === 401 && err.url && !err.url.includes('api/private/account') && this.accountService.isAuthenticated()) {
             this.stateStorageService.storeUrl(this.router.routerState.snapshot.url);
-            this.loginService.logout();
-            this.router.navigate(['/login']);
+            this.authServerProvider.refresh();
           }
         },
       })

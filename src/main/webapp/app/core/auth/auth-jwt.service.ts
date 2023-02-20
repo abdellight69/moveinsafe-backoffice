@@ -9,6 +9,7 @@ import { Login } from 'app/login/login.model';
 
 type JwtToken = {
   token: string;
+  refreshToken: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -26,12 +27,23 @@ export class AuthServerProvider {
     return tokenInLocalStorage ?? tokenInSessionStorage ?? '';
   }
 
-
+  getRefreshToken(): string {
+    const refreshTokenInLocalStorage: string | null = this.localStorageService.retrieve('authenticationToken');
+    const refreshTokenInSessionStorage: string | null = this.sessionStorageService.retrieve('authenticationToken');
+    return refreshTokenInLocalStorage ?? refreshTokenInSessionStorage ?? '';
+  }
 
   login(credentials: Login): Observable<void> {
     return this.http
       .post<JwtToken>(this.applicationConfigService.getEndpointFor('api/public/account/authenticate'), credentials)
-      .pipe(map(response => this.authenticateSuccess(response, credentials.rememberMe)));
+      .pipe(map(response => this.authenticateSuccess(response)));
+  }
+
+  refresh(): Observable<void> {
+    const refreshToken = this.getRefreshToken();
+    return this.http
+      .get<JwtToken>(this.applicationConfigService.getEndpointFor('api/public/account/token/refresh?refresh=' + refreshToken))
+      .pipe(map(response => this.authenticateSuccess(response)));
   }
 
   logout(): Observable<void> {
@@ -44,16 +56,15 @@ export class AuthServerProvider {
   private logoutSuccess(): void {
     this.localStorageService.clear('authenticationToken');
     this.sessionStorageService.clear('authenticationToken');
+
   }
 
-  private authenticateSuccess(response: JwtToken, rememberMe: boolean): void {
+  private authenticateSuccess(response: JwtToken): void {
     const jwt = response.token;
-    if (rememberMe) {
-      this.localStorageService.store('authenticationToken', jwt);
-      this.sessionStorageService.clear('authenticationToken');
-    } else {
-      this.sessionStorageService.store('authenticationToken', jwt);
-      this.localStorageService.clear('authenticationToken');
-    }
+    const refreshToken = response.refreshToken;
+    this.sessionStorageService.store('authenticationToken', jwt);
+    this.sessionStorageService.store('authenticationRefreshToken', refreshToken);
+    this.localStorageService.clear('authenticationToken');
+    this.localStorageService.clear('authenticationRefreshToken');
   }
 }
